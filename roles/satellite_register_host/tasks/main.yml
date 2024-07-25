@@ -1,0 +1,42 @@
+- name: Check if variables are properly configured
+  ansible.builtin.assert:
+    that:
+      - satellite_register_hostname is defined
+      - satellite_register_username is defined
+      - satellite_register_password is defined
+      - satellite_register_activationkey is defined
+    fail_msg: "One or more minimum configuration variables are not defined. See defaults/main.yml for details."
+
+- name: "Generate a registeration command on Satellite"
+  ansible.builtin.uri:
+    url: "https://{{ satellite_register_hostname }}/api/registration_commands"
+    method: POST
+    headers:
+      Content-Type: application/json
+    user: "{{ satellite_register_username }}"
+    password: "{{ satellite_register_password }}"
+    force_basic_auth: true
+    body_format: json
+    body:
+      registration_command: 
+        activation_keys:
+          - "{{ satellite_register_activationkey }}"
+        insecure: "{{ satellite_register_insecure }}"
+        setup_insights: "{{ satellite_register_insights }}"
+        setup_remote_execution: "{{ satellite_register_remote_exec }}"
+        setup_remote_execution_pull: "{{ satellite_register_remote_exec_pull }}"
+    return_content: true
+    validate_certs: "{{ not satellite_register_insecure }}"
+  delegate_to: localhost
+  register: result
+
+- name: "Show registeration command"
+  ansible.builtin.debug:
+    var: result.json.registration_command
+  delegate_to: localhost
+  when: satellite_register_debug == true
+
+- name: "Run registration command"
+  ansible.builtin.shell:
+    cmd: "{{ result.json.registration_command }}"
+  when: satellite_register_dryrun != true

@@ -1,0 +1,18 @@
+---
+- name: Register new hosts to Satellite server
+  hosts: new_hosts
+  vars:
+    # mandatory variables
+    satellite_register_hostname: 'satellite.example.com'
+    satellite_register_username: 'register'
+    satellite_register_password: 'changeme'
+    satellite_register_activation_key: 'default_activationkey'
+    # optional variables
+    satellite_register_dryrun: false
+    satellite_register_insecure: true
+    satellite_register_insights: false
+    satellite_register_remote_exec: false
+    satellite_register_remote_exec_pull: false
+
+  roles:
+    - satellite_register_host

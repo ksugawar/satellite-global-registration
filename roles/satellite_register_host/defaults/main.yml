@@ -1,0 +1,24 @@
+# Overrideable variables
+
+#### MINIMUM CONFIGURATION PARAMETERS
+# Define all of the following four parameters before using this role
+# satellite_register_hostname: 'satellite.fqdn'
+# satellite_register_username: 'username'
+# satellite_register_password: 'password'
+# satellite_register_activationkey: 'activationkey'
+
+#### Configurable Registration Parameters (override optional)
+# satellite_register_insecure: true if Satellite server uses Self-Signed Certificate, false if not
+satellite_register_insecure: true
+# satellite_register_insights: true if you want host to register to Red Hat Insights at registration time
+satellite_register_insights: false
+# satellite_register_remote_exec: true if you plan to run commands on host from Satellite (requires ssh port be open on host)
+satellite_register_remote_exec: false
+# satellite_register_remote_exec_pull: true if you plan to run commands on host from Satellite in mqtt-pull mode
+satellite_register_remote_exec_pull: false
+
+#### Testing purpose only (override to true if dryrun is desired)
+satellite_register_dryrun: false
+
+#### Debug flag (override to true if debug info is desired)
+satellite_register_debug: false
