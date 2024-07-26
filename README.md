@@ -12,28 +12,22 @@ It is the main purpose of these scripts and ansible role to mitigate this operat
 
 By using one of these scripts or the ansible role, the administrator can now perform host registration without explicit operations on the Satellite Web UI.
 
-## Disclaimer of Warranty.
+## License
 
-THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
-APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
-HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY
-OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM
-IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF
-ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+Copyright (C) 2024, Ken Sugawara
 
-## Limitation of Liability.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
-THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
-GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
-USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
-DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
-PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),
-EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGES.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Support
 
@@ -62,7 +56,7 @@ sat_activation_key='activation-key'
 ```
 
 
-2. If necessary, edit any of the four variables contained in the section `#### Configurable Registration Parameters (Optional)`. If Satellite is to act simply as a yum repository server, probably the default value will suffice.
+2. If necessary, edit any of the five variables contained in the section `#### Configurable Registration Parameters (Optional)`. If Satellite is to act simply as a private yum repository server, probably the default value will suffice.
 
 ```
 #### Configurable Registration Parameters (Optional)
@@ -93,3 +87,29 @@ RHEL 8/9 hosts:
 curl -o satellite-global-register.py http://satellite.fqdn/pub/satellite-global-register.py
 /usr/libexec/platform-python ./satellite-global-register.py
 ```
+
+## Usage of Ansible role
+
+See the sample playbook `sample-satellite-global-register.yml` for usage. Required (mandatory) and optional configuration variables are structured in a similar manner as the scripts, except that the variable names start with the `satellite_reigster_` prefix:
+```
+# mandatory variables
+satellite_register_hostname: 'satellite.example.com'
+satellite_register_username: 'register'
+satellite_register_password: 'changeme'
+satellite_register_activation_key: 'default_activationkey'
+# optional variables
+satellite_register_dryrun: false
+satellite_register_insecure: true
+satellite_register_insights: false
+satellite_register_remote_exec: false
+satellite_register_remote_exec_pull: false
+```
+
+NOTE: The role fails to execute if any of mandatory variables are not defined.
+
+Then, you can invoke the role as shown below:
+```
+  roles:
+    - satellite_register_host
+```
+Or any other way you use to invoke a role within a playbook.
